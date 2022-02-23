@@ -10,7 +10,7 @@ sudo apt update && sudo apt install zsh git -y
 if [ $SHELL != "/bin/zsh" ];
 then
    # if not set to zsh yet , changes user default to zsh
-   sudo chsh -s /bin/zsh $USER
+   sudo -s chsh -s /bin/zsh $USER
 fi
 
 # checks for an installation of oh-my-zsh
