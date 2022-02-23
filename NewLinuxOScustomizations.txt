@@ -3,9 +3,7 @@ New Linux OS customizations
 install git and zsh
     sudo apt update && sudo apt install zsh git -y
 set zsh as default shell
-    sudo -s
-    chsh -s /bin/zsh root
-    chsh -s /bin/zsh username
+    sudo chsh -s /bin/zsh username
 install oh-my-zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 config oh-my-zsh and zsh (use .zshrc file in repo)
