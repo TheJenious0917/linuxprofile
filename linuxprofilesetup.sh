@@ -14,7 +14,7 @@ then
 fi
 
 # checks for an installation of oh-my-zsh
-if [ ! -d "~/.oh-my-zsh"];
+if [ ! -d "~/.oh-my-zsh" ];
 then
    # if oh-my-zsh directory doesn't exist, downloads from github and runs installation
    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
