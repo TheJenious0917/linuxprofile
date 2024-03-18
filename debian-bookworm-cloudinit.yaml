@@ -1,0 +1,76 @@
+#cloud-config
+#Set the locale - There is a bug with Debian and setting locale with cloudinit. default is acceptable so commenting out
+#locale: en_US.UTF-8
+
+# set hostname
+fqdn: bookworm.jenious.lan
+
+# Set the timezone
+timezone: America/Chicago
+
+# Create groups
+groups:
+  - docker
+  - users
+
+# Create a new user
+users:
+  - name: 'legionadmin'
+    gecos: Legion Administrator
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5pqXtBmDeA518iBCb4lKQVldbqr0qNogd3ByIvH4FU chris@shepard
+    groups: [docker,users,adm,sudo]
+
+mounts:
+  - [ ds920:/volume1/PlexMedia, /home/legionadmin/MountedPlexMedia, "auto", "nfs vers=3,rw", "0", "0" ]
+
+bootcmd:
+  - [ cloud-init-per, once, dirmngr-aptupdate, apt-get, update ]
+  - [ cloud-init-per, once, dirmngr-aptinstall, apt-get, install, dirmngr, -y ]
+  - [ cloud-init-per, once, dirmngr-aptinstall, apt-get, install, gnupg2, -y ]
+
+# Update apt database and perform an upgrade
+package_update: true
+package_upgrade: true
+
+apt:
+  preserve_sources_list: true
+  sources:
+    docker.list:
+      source: "deb [arch=amd64] https://download.docker.com/linux/debian bookworm stable"
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    hashicorp.list:
+      source: "deb [arch=amd64] https://apt.releases.hashicorp.com bookworm main"
+      keyid: 798AEC654E5C15428C8E42EEAA16FCBCA621E701
+
+# Install packages
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - containerd.io
+  - curl
+  - docker-ce
+  - docker-ce-cli
+  - docker-buildx-plugin
+  - docker-compose-plugin
+  - git
+  - gnupg-agent
+  - qemu-guest-agent
+  - terraform
+  - zsh
+
+# Run commands
+runcmd:
+  - systemctl start qemu-guest-agent
+  - systemctl enable qemu-guest-agent
+  - systemctl start docker.service
+  - systemctl enable docker.service
+  - systemctl start containerd.service
+  - systemctl enable containerd.service
+  - terraform -install-autocomplete
+  - chsh -s /bin/zsh legionadmin
+  - su legionadmin -c 'sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'
+  - su legionadmin -c 'curl -LJo /home/legionadmin/.zshrc https://raw.githubusercontent.com/TheJenious0917/linuxprofile/main/.zshrc'
