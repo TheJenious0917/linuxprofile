@@ -1,0 +1,13 @@
+wget -q https://cloud.debian.org/images/cloud/bookworm/20240211-1654/debian-12-generic-amd64-20240211-1654.qcow2
+mv debian-12-generic-amd64-20240211-1654.qcow2 debian-12.qcow2
+qm create 1001 --name bookworm-template --ostype l26 --memory 4096 --net0 virtio,bridge=vmbr0 --agent 1 --bios ovmf \
+  --machine q35 --efidisk0 local-lvm:vm-1001-disk-0,efitype=4m,size=4M --cpu qemu64 --cores 4 --sockets 1 --balloon 0 --numa 1 --scsihw virtio-scsi-pci \
+  --ide2 local:cloudinit --cicustom user=local:snippets/bookworm.yaml --serial0 socket --vga serial0 --boot order=virtio0 \
+  --ipconfig0 ip=dhcp
+qemu-img resize debian-12.qcow2 40G
+qm importdisk 1001 debian-12.qcow2 local-lvm
+qm set 1001 --virtio0 local-lvm:vm-1001-disk-1 --boot order=virtio0
+qm template 1001
+qm cloudinit update 1001
+
+qm clone 1001 106 --full --name bookworm-test
