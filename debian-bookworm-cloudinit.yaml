@@ -24,8 +24,8 @@ users:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5pqXtBmDeA518iBCb4lKQVldbqr0qNogd3ByIvH4FU chris@shepard
     groups: [docker,users,adm,sudo]
 
-mounts:
-  - [ ds920:/volume1/PlexMedia, /home/legionadmin/MountedPlexMedia, "auto", "nfs vers=3,rw", "0", "0" ]
+# mounts:
+#  - [ ds920:/volume1/PlexMedia, /home/legionadmin/MountedPlexMedia, "auto", "nfs vers=3,rw", "0", "0" ]
 
 bootcmd:
   - [ cloud-init-per, once, dirmngr-aptupdate, apt-get, update ]
