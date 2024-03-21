@@ -1,4 +1,5 @@
 #!/bin/bash
+# configures the primary user profile on an ubuntu based linux desktop server
 
 # collects username of user running script
 USER=`whoami`
